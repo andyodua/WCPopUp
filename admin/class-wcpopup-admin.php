@@ -176,7 +176,14 @@ class Wcpopup_Admin {
 			'name'      => 'wcpopup_popup_enable',
 			'string'      => 'Показывать вспылавающее окно',
 			'section'	=> 'wcpopup_general_section_popup', 
-		));		
+		));	
+		$this->addSettingsField(array(
+			'subtype'   => 'text',
+			'id'    => 'wcpopup_popup_counter',
+			'name'      => 'wcpopup_popup_counter',
+			'string'      => 'Показывать окно раз (событие купить)',
+			'section'	=> 'wcpopup_general_section_popup', 
+		));				
 		$this->addSettingsField(array(
 			'subtype'   => 'text',
 			'id'    => 'wcpopup_popup_timer',

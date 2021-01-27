@@ -61,7 +61,10 @@ class Wcpopup_Public {
 	}
 	public function forceSessionEnd(){
 		session_destroy ();
-	}	
+	}
+	public function WcPopUpInit(){
+		$this->forceSession();
+	}
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
 	 *
@@ -77,7 +80,7 @@ class Wcpopup_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts() { print_r($_SESSION);
 		//wp_enqueue_script( $this->plugin_name."js", plugin_dir_url( __FILE__ ) . 'js/jquery.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name."fancy", plugin_dir_url( __FILE__ ) . 'js/jquery.fancybox.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wcpopup-public.js', array( 'jquery' ), $this->version, false );
@@ -282,6 +285,15 @@ class Wcpopup_Public {
 		$this->WcPopUpClose ();
 		$this->ajaxreturn(1);
 	}
+	public function WcAddToCart (){
+		$_SESSION['WCPOPUP_COUNTER']++;
+		if ($_SESSION['WCPOPUP_COUNTER'] > get_option('wcpopup_popup_counter')){
+			$this->WcPopUpClose();
+		}else{
+			$this->WcPopUpOpen();
+		}
+		return true;
+	}
 	public function WcPopUpClose (){
 		$_SESSION['WCPOPUP'] = 'close';
 		return true;
@@ -343,7 +355,7 @@ class Wcpopup_Public {
 			}
 		}		
 	}		
-	public function progressBarAjax($id,$idisplay){
+	public function progressBarAjax($idbar,$idisplay){
 		$cart = WC()->cart->get_cart();
 		if ( !empty( $cart ) ){
 			if (!empty(WC()->session->get('SELCOUNRTY'))){
@@ -355,83 +367,37 @@ class Wcpopup_Public {
 			?>
 			<script>
 			jQuery(document).ready(function() {
-				jQuery('.<?php echo $idisplay; ?> .product_total_weight').empty();
 				jQuery('.<?php echo $idisplay; ?> .product_total').empty();
 				var masiv_weight = [];
 				var masiv_price = [];
 				var masiv_shipname = [];
-				 jQuery(".<?php echo $id;?>").each(function(ii,jj){
+				 jQuery(".<?php echo $idbar;?>").each(function(ii,jj){
 					var shipid = parseInt(jQuery(this).data('shiping'));
 					masiv_weight[shipid] =0;
 					masiv_price[shipid] = 0;	
 					masiv_shipname[shipid] = jQuery(this).data('shipname');	
 				});
-				 jQuery(".<?php echo $id;?>").each(function(ii,jj){	
-					var array = logic(jQuery(this)); 
+				jQuery(".<?php echo $idbar;?>").each(function(ii,jj){	
+					var array = jQuery(this).logic(); 
 					var shipid = parseInt(jQuery(this).data('shiping'));
 					masiv_weight[shipid] += array.weight;
 					masiv_price[shipid] += array.price;
 				});
-				jQuery.each(masiv_shipname,function(ii,jj){
-					if (masiv_weight[ii] > 0){
-						progresbar(ii,jj,parseFloat(masiv_price[ii]),parseFloat(masiv_weight[ii]));
+				jQuery.each(masiv_shipname,function(shipid,shipname){
+					if (masiv_weight[shipid] > 0){
+						jQuery('.<?php echo $idisplay; ?> .product_total').progresbar(
+							shipid,
+							shipname,
+							parseFloat(masiv_price[shipid]),
+							parseFloat(masiv_weight[shipid]),
+							'<?php echo $this->getCountryWeight(WC()->session->get('SELCOUNRTY')); ?>',
+							'<?php echo $this->getCountryPoshlina(WC()->session->get('SELCOUNRTY')); ?>',
+						);
 					}
 				});
 			})
 				
-			function logic(element){
-				var weight = 0;
-				weight = parseFloat(element.find('.jweight').data('weight'));
-				
-				var quantity = 0;
-				quantity = element.find('.product_quantity').data('quantity');
-		
-				var price = 0;		
-				price = parseFloat(element.find('.jprice').data('price'));
-				
-				var sum_weight;
-				var all_weight = 0;
-				var all_amount = 0;
-				
-				sum_weight = quantity*weight
-				element.find('.product_weight').html(sum_weight.toFixed(3) +' kg');
-				all_amount = (price*quantity) + all_amount;
-				
-				var array = {'weight':parseFloat(sum_weight),'price':parseFloat(all_amount)};
-				return array;
-			}
-			
-			function progresbar(shipid,shipname,all_amount,all_weight){
-				//var country_weight =20; //default
-				//var country_poshlina = 10; //default
-				var country_weight = <?php echo $this->getCountryWeight(WC()->session->get('SELCOUNRTY')); ?>; //default
-				var country_poshlina = <?php echo $this->getCountryPoshlina(WC()->session->get('SELCOUNRTY')); ?>; //default					
-				
-				var proc_weight = 100/country_weight*all_weight;
-				var bar_color = 'bg-success';
-				if (all_weight > country_weight){
-					bar_color = 'bg-danger';
-				}
-				var remain_weight = parseFloat(country_weight-all_weight).toFixed(3);
-				if (remain_weight<0){
-					remain_weight = "превышен лимит";
-				}			
-				var progres_weight= 'Общий вес '+shipname+'<div class="container"><div class="row"><div class="col-9"><div class="progress"><div class="progress-bar '+bar_color+'" role="progressbar" style="width: '+proc_weight+'%" aria-valuenow="'+proc_weight+'" aria-valuemin="0" aria-valuemax="100"></div><span class="justify-content-center d-flex position-absolute w-100 bartext">осталось '+remain_weight+' kg</span></div></div><div class="col-3">max '+country_weight+' kg</div></div></div>';
-				jQuery('.<?php echo $idisplay; ?> .product_total_weight').append(progres_weight);
-				
-				
-				var proc_sum = 100/country_poshlina*all_amount;
-				var bar_sum_color = 'bg-success';
-				if (all_amount > country_poshlina){
-					bar_sum_color = 'bg-danger';
-				}	
-				var remain_poshlina = parseFloat(country_poshlina-all_amount).toFixed(2);
-				if (remain_poshlina<0){
-					remain_poshlina = "превышен лимит";
-				}
-				var progres_poshlina = 'Беспошлинный лимит '+shipname+'<div class="container"><div class="row"><div class="col-9"><div class="progress"><div class="progress-bar '+bar_sum_color+'" role="progressbar" style="width: '+proc_sum+'%" aria-valuenow="'+proc_sum+'" aria-valuemin="0" aria-valuemax="100"></div><span class="justify-content-center d-flex position-absolute w-100 bartext">осталось '+remain_poshlina+' €</span></div></div><div class="col-3">max '+country_poshlina+' €</div></div></div>';		
-				jQuery('.<?php echo $idisplay; ?> .product_total_weight').append(progres_poshlina);
-			}
+
 			</script>			
 			<?php
 		}
@@ -439,9 +405,6 @@ class Wcpopup_Public {
 	public function displayProgressBlock($id){
 		?>
 			<div class="<?php echo $id; ?>">
-				<div class="product_total_weight">
-				</div>
-				<br>
 				<div class="product_total">
 				</div>
 			</div>

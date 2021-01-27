@@ -40,6 +40,7 @@ class Wcpopup_Activator {
 		self::chk_option("wcpopup_chk_email", WCPOPUP_CHK_EMAIL);
 		self::chk_option("wcpopup_chk_country", WCPOPUP_CHK_COUNTRY);
 		self::chk_option("wcpopup_popup_enable", WCPOPUP_POPUP_ENABLE);
+		self::chk_option("wcpopup_popup_counter", WCPOPUP_POPUP_COUNTER);
 		self::chk_option("wcpopup_popup_timer", WCPOPUP_POPUP_TIMER);
 		self::chk_option("wcpopup_progressbar_enable", WCPOPUP_PROGRESSBAR_ENABLE);
 		self::chk_option("wcpopup_savetodb_enable", WCPOPUP_SAVETODB_ENABLE);

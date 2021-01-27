@@ -162,9 +162,9 @@ class Wcpopup {
 		
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-		$this->loader->add_action('init', $plugin_public, 'forceSession');
-		$this->loader->add_action('wp_logout', $plugin_public,'forceSessionEnd');
-		$this->loader->add_action('wp_login', $plugin_public,'forceSessionEnd');		
+		$this->loader->add_action( 'init', $plugin_public, 'WcPopUpInit');
+		$this->loader->add_action( 'wp_logout', $plugin_public,'forceSessionEnd');
+		$this->loader->add_action( 'wp_login', $plugin_public,'forceSessionEnd');		
 		$this->loader->add_action( 'woocommerce_init', $plugin_public, 'forceWcSession');
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'popupCountryForm' );
 		$this->loader->add_action( 'wp_ajax_nopriv_wcpopupsetcountry',$plugin_public, 'setCountryAjax' );
@@ -175,10 +175,8 @@ class Wcpopup {
 		$this->loader->add_action( 'woocommerce_review_order_after_cart_contents',$plugin_public, 'displayProgressBlockWC' );	//checkout page ad progress bar
 
 		//$this->loader->add_action( 'woocommerce_review_order_before_cart_contents',$plugin_public, 'progress' );		
-		
-		
 		$this->loader->add_action( 'woocommerce_review_order_after_cart_contents',$plugin_public, 'WcPopUpClose' );	//checkout page
-		$this->loader->add_action( 'woocommerce_add_to_cart',$plugin_public, 'WcPopUpOpen' );	//checkout page		
+		$this->loader->add_action( 'woocommerce_add_to_cart',$plugin_public, 'WcAddToCart' );	//checkout page		
 		$this->loader->add_action( 'woocommerce_cart_has_errors' ,$plugin_public, 'wcCartError' );	//checkout pageerror message
 		$this->loader->add_filter( 'woocommerce_checkout_fields', $plugin_public,  'set_checkout_fields');
 		//$this->loader->add_filter( 'woocommerce_billing_fields', $plugin_public,  'set_checkout_fields');

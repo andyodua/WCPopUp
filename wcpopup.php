@@ -38,6 +38,7 @@ define( 'WCPOPUP_CHK_PHONE', '1' );
 define( 'WCPOPUP_CHK_EMAIL', '1' );
 define( 'WCPOPUP_CHK_COUNTRY', '1' );
 define( 'WCPOPUP_POPUP_ENABLE', '1' );
+define( 'WCPOPUP_POPUP_COUNTER', '1' );
 define( 'WCPOPUP_POPUP_TIMER', '5' );
 define( 'WCPOPUP_PROGRESSBAR_ENABLE', '1' );
 define( 'WCPOPUP_SAVETODB_ENABLE', '1' );

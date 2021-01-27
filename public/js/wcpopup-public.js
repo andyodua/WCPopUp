@@ -66,4 +66,53 @@ jQuery(document).ready(function() {
 		return false;
 	})	
 });
+jQuery.fn.logic = function(){
+	var element = this;
+	var weight = 0;
+	weight = parseFloat(element.find('.jweight').data('weight'));
+	
+	var quantity = 0;
+	quantity = element.find('.product_quantity').data('quantity');
 
+	var price = 0;		
+	price = parseFloat(element.find('.jprice').data('price'));
+	
+	var sum_weight;
+	var all_weight = 0;
+	var all_amount = 0;
+	
+	sum_weight = quantity*weight
+	element.find('.product_weight').html(sum_weight.toFixed(3) +' kg');
+	all_amount = (price*quantity) + all_amount;
+	
+	var array = {'weight':parseFloat(sum_weight),'price':parseFloat(all_amount)};
+	return array;
+}
+
+jQuery.fn.progresbar = function(shipid,shipname,all_amount,all_weight,country_weight,country_poshlina){
+	var element = this;
+	var proc_weight = 100/country_weight*all_weight;
+	var bar_color = 'bg-success';
+	if (all_weight > country_weight){
+		bar_color = 'bg-danger';
+	}
+	var remain_weight = parseFloat(country_weight-all_weight).toFixed(3);
+	if (remain_weight<0){
+		remain_weight = "превышен лимит";
+	}			
+	var progres_weight= 'Общий вес '+shipname+'<div class="container"><div class="row"><div class="col-9"><div class="progress"><div class="progress-bar '+bar_color+'" role="progressbar" style="width: '+proc_weight+'%" aria-valuenow="'+proc_weight+'" aria-valuemin="0" aria-valuemax="100"></div><span class="justify-content-center d-flex position-absolute w-100 bartext">осталось '+remain_weight+' kg</span></div></div><div class="col-3">max '+country_weight+' kg</div></div></div>';
+	element.append(progres_weight);
+	
+	
+	var proc_sum = 100/country_poshlina*all_amount;
+	var bar_sum_color = 'bg-success';
+	if (all_amount > country_poshlina){
+		bar_sum_color = 'bg-danger';
+	}	
+	var remain_poshlina = parseFloat(country_poshlina-all_amount).toFixed(2);
+	if (remain_poshlina<0){
+		remain_poshlina = "превышен лимит";
+	}
+	var progres_poshlina = 'Беспошлинный лимит '+shipname+'<div class="container"><div class="row"><div class="col-9"><div class="progress"><div class="progress-bar '+bar_sum_color+'" role="progressbar" style="width: '+proc_sum+'%" aria-valuenow="'+proc_sum+'" aria-valuemin="0" aria-valuemax="100"></div><span class="justify-content-center d-flex position-absolute w-100 bartext">осталось '+remain_poshlina+' €</span></div></div><div class="col-3">max '+country_poshlina+' €</div></div></div>';		
+	element.append(progres_poshlina);
+}
