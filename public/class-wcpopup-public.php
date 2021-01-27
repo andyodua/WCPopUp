@@ -80,7 +80,7 @@ class Wcpopup_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() { print_r($_SESSION);
+	public function enqueue_scripts() { 
 		//wp_enqueue_script( $this->plugin_name."js", plugin_dir_url( __FILE__ ) . 'js/jquery.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name."fancy", plugin_dir_url( __FILE__ ) . 'js/jquery.fancybox.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wcpopup-public.js', array( 'jquery' ), $this->version, false );
