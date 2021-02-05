@@ -100,7 +100,11 @@ class Wcpopup_Public {
 		?>
 		<span 
 			id="wcpopup_variable"
-			data-timer="<?php echo (int)get_option('wcpopup_popup_timer')*1000; ?>">
+			data-timer="<?php echo (int)get_option('wcpopup_popup_timer')*1000; ?>"
+			data-counter ="<?php echo (int)$_SESSION['WCPOPUP_COUNTER']; ?>"
+			data-count ="<?php echo (int)get_option('wcpopup_popup_counter'); ?>"
+			data-start="<?php echo (int)$_SESSION['WCPOPUP_START']; ?>"
+			>
 		</span>
 		<?php
 	}
@@ -113,11 +117,12 @@ class Wcpopup_Public {
 		global $woocommerce;
 		$UserCountry = $this->getUserCountry(); 
 		$this->ajaxVar();
-		if (!isset($_SESSION['WCPOPUP'])  && get_option('wcpopup_popup_enable')){
+		if (!isset($_SESSION['WCPOPUP'])  && get_option('wcpopup_popup_enable') ){ //WCPOPUP = false and wcpopup_popup_enable = true		
+		}
 			$countries_obj   = new WC_Countries();
 			$countries   = $countries_obj->__get('countries');
 			?>
-			<div style="display: none;" id="wcpopup_modal">
+			<div style="display: none;" id="wcpopup_modal" style="z-index:9999999">
 			  <h2>Давайте познакомимся</h2>
 			  <p>
 			  <form action="#" method="post" class="form-horizontal">
@@ -171,7 +176,7 @@ class Wcpopup_Public {
 			  </p>
 			</div>
 			<?php
-		}
+
 
 	}
 	/**
@@ -179,7 +184,7 @@ class Wcpopup_Public {
 	 *
 	 * @since    1.0.0
 	 */	
-	public function setCountryAjax() {
+	public function sendDataAjax() {
 		global $wpdb;
 		$id = array();
 			
@@ -285,6 +290,14 @@ class Wcpopup_Public {
 		$this->WcPopUpClose ();
 		$this->ajaxreturn(1);
 	}
+	public function WcAddToCartAjax(){
+		
+		$ajax = "<script>alert();console.log('test');jQuery('#wcpopup_modal').fancybox().trigger('click');</script>";
+		$array = 	array( 
+			'button.single_add_to_cart_button' => $ajax,
+		);
+		return $array;
+	}
 	public function WcAddToCart (){
 		$_SESSION['WCPOPUP_COUNTER']++;
 		if ($_SESSION['WCPOPUP_COUNTER'] > get_option('wcpopup_popup_counter')){
@@ -295,6 +308,7 @@ class Wcpopup_Public {
 		return true;
 	}
 	public function WcPopUpClose (){
+		$_SESSION['WCPOPUP_START']  = 1;
 		$_SESSION['WCPOPUP'] = 'close';
 		return true;
 	}

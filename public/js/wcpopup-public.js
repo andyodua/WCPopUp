@@ -1,13 +1,35 @@
 
 jQuery(document).ready(function() {
 	var timervalue = jQuery("#wcpopup_variable").data('timer');
+	var countvalue = jQuery("#wcpopup_variable").data('count');
+	var countervalue = jQuery("#wcpopup_variable").data('counter');
+	var startvalue = jQuery("#wcpopup_variable").data('start');	
+	
 	setTimeout(function(){
-		jQuery('#wcpopup_modal').fancybox().trigger('click'); 
+		if (startvalue == 0){
+			jQuery('#wcpopup_modal').fancybox().trigger('click'); 
+		}
 	},timervalue) 
+	
+	
+	jQuery('.single_add_to_cart_button').bind('click',function(){
+		if (countervalue < countvalue){
+			jQuery('#wcpopup_modal').fancybox().trigger('click'); 
+			countervalue++;
+		}
+	}) 
+	
+	jQuery('.add_to_cart_button').bind('click',function(){
+		if (countervalue < countvalue){
+			jQuery('#wcpopup_modal').fancybox().trigger('click'); 
+			countervalue++;
+		}
+	}) 	
+	 
 	
 	jQuery('#wcpopup_modal  #send').bind('click',function(){
 		var data = {
-			'action': 'wcpopupsetcountry',
+			'action': 'wcpopupsenddata',
 			'country': jQuery("#wcpopup_modal #country").val(),
 			'username': jQuery("#wcpopup_modal #username").val(),
 			'userphone': jQuery("#wcpopup_modal #userphone").val(),

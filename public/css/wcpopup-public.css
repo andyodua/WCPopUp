@@ -34,7 +34,9 @@
 	.areasuccess{
 		border-color: green!important;
 	}	
-	
+	.fancybox-container {
+		z-index: 9999999!important;
+	}
 	#wcpopup_modal  .wcpopup-select-box select, #wcpopup_modal  .wcpopup-input-box input{
 		-webkit-appearance: none;
 		-moz-appearance: none;
@@ -47,14 +49,13 @@
 		font-size: 14px;
 		padding: 15px;
 		line-height: 100%;
-		color:
-		#007bff;
+		color:#007bff;
+
 	}
 	#wcpopup_modal  .wcpopup-submit-button button{
 		padding: 10px 20px;
 		border-radius: 5px;
-		background-color:
-		#007bff ;
+		background-color:#007bff ;
 		font-weight: 400 ;
 		color: #fff ;
 		text-transform: uppercase;
