@@ -117,12 +117,12 @@ class Wcpopup_Public {
 		global $woocommerce;
 		$UserCountry = $this->getUserCountry(); 
 		$this->ajaxVar();
-		if (!isset($_SESSION['WCPOPUP'])  && get_option('wcpopup_popup_enable') ){ //WCPOPUP = false and wcpopup_popup_enable = true		
-		}
+		//if (!isset($_SESSION['WCPOPUP'])  && get_option('wcpopup_popup_enable') ){ //WCPOPUP = false and wcpopup_popup_enable = true		
+		//}
 			$countries_obj   = new WC_Countries();
 			$countries   = $countries_obj->__get('countries');
 			?>
-			<div style="display: none;" id="wcpopup_modal" style="z-index:9999999">
+			<div style="display: none;" id="wcpopup_modal" >
 			  <h2>Давайте познакомимся</h2>
 			  <p>
 			  <form action="#" method="post" class="form-horizontal">
@@ -289,14 +289,6 @@ class Wcpopup_Public {
 	public function ajaxWcPopUpClose(){
 		$this->WcPopUpClose ();
 		$this->ajaxreturn(1);
-	}
-	public function WcAddToCartAjax(){
-		
-		$ajax = "<script>alert();console.log('test');jQuery('#wcpopup_modal').fancybox().trigger('click');</script>";
-		$array = 	array( 
-			'button.single_add_to_cart_button' => $ajax,
-		);
-		return $array;
 	}
 	public function WcAddToCart (){
 		$_SESSION['WCPOPUP_COUNTER']++;
