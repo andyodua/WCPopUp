@@ -231,7 +231,8 @@ class Wcpopup_Public {
 		}
 		
 		if (count($id) == 0){
-			$_SESSION['WCPOPUP'] = 'close';
+			$this->WcPopUpClose();
+			$_SESSION['WCPOPUP_COUNTER'] = get_option('wcpopup_popup_counter');
 			if (get_option('wcpopup_savetodb_enable')) {
 				$this->storeToDB(array(
 					'SELCOUNRTY' => $SelCountry,
@@ -287,7 +288,7 @@ class Wcpopup_Public {
 	  return $fields;
 	}
 	public function ajaxWcPopUpClose(){
-		$this->WcPopUpClose ();
+		$this->WcPopUpClose();
 		$this->ajaxreturn(1);
 	}
 	public function WcAddToCart (){

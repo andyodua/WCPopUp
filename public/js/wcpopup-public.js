@@ -8,6 +8,7 @@ jQuery(document).ready(function() {
 	setTimeout(function(){
 		if (startvalue == 0){
 			jQuery('#wcpopup_modal').fancybox().trigger('click'); 
+			startvalue = 1;
 		}
 	},timervalue) 
 	
@@ -46,7 +47,10 @@ jQuery(document).ready(function() {
 			success: function(data) {
 				console.log(data);
 				if (data.status == 1){
-					location.reload();
+					startvalue = 1;
+					countervalue = countvalue;
+					jQuery.fancybox.close();
+					//location.reload();
 				}
 				if (data.status == 2){
 					jQuery('#wcpopup_modal #result').html();
