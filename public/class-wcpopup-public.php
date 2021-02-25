@@ -64,7 +64,77 @@ class Wcpopup_Public {
 	}
 	public function WcPopUpInit(){
 		$this->forceSession();
+		$this->createTemplateForm();
 	}
+	
+	public function createTemplateForm(){
+		$this->register_post_type();
+		if ( get_posts( array( 'post_type' => 'wcpopup-form' ) ) ) {
+			return;
+		}
+		$post_id = wp_insert_post( array(
+			'post_type' => 'wcpopup-form',
+			'post_status' => 'publish',
+			'post_title' => 'wcpopup-form-welcome',
+			'post_content' => trim( '
+			<div style="display: none;" id="wcpopup_modal" >
+			  <h2>Давайте познакомимся</h2>
+			  <p>
+			  <form action="#" method="post" class="form-horizontal">
+			  
+			   <div class="mb-3">
+				[wcpoup-field type="select" label="Страна доставки:" country="UA;RU;KZ;"]
+
+			  </div>			  
+			   <div class="mb-3">
+				[wcpoup-field name="username" type="input" label="Ваше имя" placeholder="Ваше имя"]
+			  </div>
+			   <div class="mb-3">
+				[wcpoup-field name="userphone" type="input" label="Номер телефона" placeholder="Номер телефона"]
+			  </div>
+			  <div class="mb-3">
+				[wcpoup-field name="usermail" type="input" label="Email" placeholder="Email"]
+
+			  </div>
+			   <div class="mb-3">
+				<div class="wcpopup-submit-button">
+					[wcpoup-field type="button" name="send" title="Продолжить"]
+					[wcpoup-field type="button" name="later" title="Закрыть"]
+				</div>				
+			  </div>
+			  </p>
+			</div>				
+			' ),
+		) );
+		
+	}
+	public static function register_post_type() {
+		register_post_type( 'wcpopup-form', array(
+			'labels' => array(
+				'name' => __( 'WcPopUp Forms', 'wcpopup-form-welcome' ),
+				'singular_name' => __( 'WcPopUp Form', 'wcpopup-form-welcome' ),
+			),
+			'rewrite' => false,
+			'query_var' => false,
+			'public' => true,
+			'show_ui' => true,
+			'publicly_queryable' => false, 
+			'exclude_from_search' => false, 
+			'show_in_nav_menus' => true, 
+/*			'capability_type' => 'page',
+			'capabilities' => array(
+				'edit_post' => 'wcpopup-form',
+				'read_post' => 'wcpopup-form',
+				'delete_post' => 'wcpopup-form',
+				'edit_posts' => 'wcpopup-form',
+				'edit_others_posts' => 'wcpopup-form',
+				'publish_posts' => 'wcpopup-form',
+				'read_private_posts' => 'wcpopup-form',
+			),*/
+		) );
+	}	
+	
+	
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
 	 *
@@ -113,71 +183,66 @@ class Wcpopup_Public {
 	 *
 	 * @since    1.0.0
 	 */
+	public function selectCountryFieldGen( $atts ){
+		global $woocommerce;
+		$UserCountry = $this->getUserCountry(); 		
+		$countries_obj   = new WC_Countries();
+		$countries   = $countries_obj->__get('countries');
+		
+		$country = explode(";",$atts['country']); //UA;RU;KZ;
+		
+		foreach($countries AS $key=>$name){
+			$selected = "";
+			if ($UserCountry == $key) {
+				$selected = "selected";
+			}
+			if (in_array($key, $country)){
+				$select .= "<option ".$selected." value='".$key."' >".$name." ".$_SESSION['SELCOUNRTY']."</option>";
+			}
+		}		
+		$html = '<label for="country" class="form-label">'.sanitize_text_field($atts['label']).'</label>';
+		$html .= '<div class="wcpopup-select-box" >
+				  <select id="country" name="country" required>
+					'.$select.'
+				  </select>
+				</div>';
+		return $html;
+	} 
+	
+	public function inputFieldGen($atts){
+		$name = sanitize_text_field($atts['name']);
+		$html = '<label for="'.$name.'" class="form-label">'.sanitize_text_field($atts['label']).'</label>
+				<div class="wcpopup-input-box">
+				  <input type="text" class="form-control" name="'.$name.'" id="'.$name.'" placeholder="'.sanitize_text_field($atts['placeholder']).'" required>
+				</div>';
+		return $html;
+	}
+	public function buttonGen($atts){
+		$html = '<button type="submit" id="'.sanitize_text_field($atts['name']).'">'.sanitize_text_field($atts['title']).'</button>';
+		return $html;
+	}
+	public function doShortcode($atts){
+		switch($atts['type']){
+			case 'select': $html = $this->selectCountryFieldGen($atts); break;
+			case 'input': $html = $this->inputFieldGen($atts); break;
+			case 'button': $html = $this->buttonGen($atts); break;
+		}
+		return $html;
+	}
 	public function popupCountryForm() {
 		global $woocommerce;
-		$UserCountry = $this->getUserCountry(); 
 		$this->ajaxVar();
 		//if (!isset($_SESSION['WCPOPUP'])  && get_option('wcpopup_popup_enable') ){ //WCPOPUP = false and wcpopup_popup_enable = true		
 		//}
-			$countries_obj   = new WC_Countries();
-			$countries   = $countries_obj->__get('countries');
-			?>
-			<div style="display: none;" id="wcpopup_modal" >
-			  <h2>Давайте познакомимся</h2>
-			  <p>
-			  <form action="#" method="post" class="form-horizontal">
-			  
-			   <div class="mb-3">
-				<label for="country" class="form-label">Страна доставки:</label>
-				<div class="wcpopup-select-box" >
-						  <select id="country" name="country" required>
-							<?php
-								foreach($countries AS $key=>$name){
-									$selected = "";
-									if ($UserCountry == $key) {
-										$selected = "selected";
-									}
-									switch($key) {
-										case 'UA':
-										case 'RU':
-										case 'KZ':
-											echo "<option ".$selected." value='".$key."' >".$name." ".$_SESSION['SELCOUNRTY']."</option>";
-										break;
-									}
-								}
-							?>
-						  </select>
-				</div>
-			  </div>			  
-			   <div class="mb-3">
-				<label for="username" class="form-label">Ваше имя</label>
-				<div class="wcpopup-input-box">
-				  <input type="text" class="form-control" id="username" placeholder="Ваше имя" required>
-				</div>
-			  </div>
-			   <div class="mb-3">
-				<label for="userphone" class="form-label">Номер телефона</label>
-				<div class="wcpopup-input-box">
-				  <input type="phone" class="form-control" id="userphone" placeholder="Номер телефона" required>
-				</div>
-			  </div>
-			  <div class="mb-3">
-				<label for="usermail" class="form-label">Email</label>
-				<div class="wcpopup-input-box">
-				  <input type="email" class="form-control" id="usermail" placeholder="Email" required>
-				</div>
-			  </div>
-			   <div class="mb-3">
-				<div class="wcpopup-submit-button">
-				  <button type="submit" id="send">Продолжить</button>
-				  <button type="submit" id="later">Закрыть</button>
-				</div>				
-			  </div>
-			  </p>
-			</div>
-			<?php
-
-
+		$content_post = get_posts( array( 
+			'post_type' => 'wcpopup-form',
+			'name' => 'wcpopup-form-welcome',
+			'post_status' => 'publish',
+			'posts_per_page' => 1
+		));
+		$content_post = $content_post[0];
+		$content = $content_post->post_content;
+		echo do_shortcode($content);
 	}
 	/**
 	 * Ajax function set country in session

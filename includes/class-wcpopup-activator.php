@@ -47,7 +47,7 @@ class Wcpopup_Activator {
 		self::chk_option("wcpopup_country_poshlina", WCPOPUP_COUNTRY_POSHLINA);
 		self::chk_option("wcpopup_country_weight", WCPOPUP_COUNTRY_WEIGHT);
 		self::chk_option("wcpopup_country_poshlina_default", WCPOPUP_COUNTRY_POSHLINA_DEFAULT);
-		self::chk_option("wcpopup_country_weight_default", WCPOPUP_COUNTRY_WEIGHT_DEFAULT);		
+		self::chk_option("wcpopup_country_weight_default", WCPOPUP_COUNTRY_WEIGHT_DEFAULT);
 	}
 	public function chk_option($option,$value){
 		if (!get_option($option)){
@@ -108,5 +108,5 @@ class Wcpopup_Activator {
 			}		
 		}
 		
-	}
+	}	
 }

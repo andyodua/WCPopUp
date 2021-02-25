@@ -146,7 +146,7 @@ class Wcpopup {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		
 	}
 
 	/**
@@ -168,6 +168,8 @@ class Wcpopup {
 		$this->loader->add_action( 'wp_login', $plugin_public,'forceSessionEnd');	//clear session	
 		$this->loader->add_action( 'woocommerce_init', $plugin_public, 'forceWcSession'); //force session init
 		$this->loader->add_action( 'wp_footer', $plugin_public, 'popupCountryForm' ); //popup form
+		
+		$this->loader->add_shortcode( 'wcpoup-field', $plugin_public, 'doShortcode' );
 		
 		$this->loader->add_action( 'wp_ajax_nopriv_wcpopupsenddata',$plugin_public, 'sendDataAjax' ); //ajax send data from form
 		$this->loader->add_action( 'wp_ajax_nopriv_wcppopupclose',$plugin_public, 'ajaxWcPopUpClose' ); //ajax send close data
