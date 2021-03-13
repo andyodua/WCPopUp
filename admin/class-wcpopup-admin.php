@@ -193,11 +193,18 @@ class Wcpopup_Admin {
 		));			
 		$this->addSettingsField(array(
 			'subtype'   => 'checkbox',
-			'id'    => 'wcpopup_progressbar_enable',
-			'name'      => 'wcpopup_progressbar_enable',
-			'string'      => 'Показывать прогрессбар в корзине',
+			'id'    => 'wcpopup_progressbar_enable_wc',
+			'name'      => 'wcpopup_progressbar_enable_wc',
+			'string'      => 'Показывать прогрессбар в корзине (checkout)',
 			'section'	=> 'wcpopup_general_section_progressbar', 
-		));				
+		));	
+		$this->addSettingsField(array(
+			'subtype'   => 'checkbox',
+			'id'    => 'wcpopup_progressbar_enable_xoo',
+			'name'      => 'wcpopup_progressbar_enable_xoo',
+			'string'      => 'Показывать прогрессбар в корзине (popup)',
+			'section'	=> 'wcpopup_general_section_progressbar', 
+		));			
 		$this->addSettingsField(array(
 			'subtype'   => 'checkbox',
 			'id'    => 'wcpopup_chk_name',

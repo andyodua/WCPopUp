@@ -42,7 +42,8 @@ class Wcpopup_Activator {
 		self::chk_option("wcpopup_popup_enable", WCPOPUP_POPUP_ENABLE);
 		self::chk_option("wcpopup_popup_counter", WCPOPUP_POPUP_COUNTER);
 		self::chk_option("wcpopup_popup_timer", WCPOPUP_POPUP_TIMER);
-		self::chk_option("wcpopup_progressbar_enable", WCPOPUP_PROGRESSBAR_ENABLE);
+		self::chk_option("wcpopup_progressbar_enable_wc", WCPOPUP_PROGRESSBAR_ENABLE_WC);
+		self::chk_option("wcpopup_progressbar_enable_xoo", WCPOPUP_PROGRESSBAR_ENABLE_XOO);
 		self::chk_option("wcpopup_savetodb_enable", WCPOPUP_SAVETODB_ENABLE);
 		self::chk_option("wcpopup_country_poshlina", WCPOPUP_COUNTRY_POSHLINA);
 		self::chk_option("wcpopup_country_weight", WCPOPUP_COUNTRY_WEIGHT);

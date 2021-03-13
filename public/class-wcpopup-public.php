@@ -62,9 +62,16 @@ class Wcpopup_Public {
 	public function forceSessionEnd(){
 		session_destroy ();
 	}
+	private $fieldName = array();
 	public function WcPopUpInit(){
 		$this->forceSession();
 		$this->createTemplateForm();
+		$this->fieldName = array(
+			'country'=>(int)get_option('wcpopup_chk_country'),
+			'username'=>(int)get_option('wcpopup_chk_name'),
+			'userphone'=>(int)get_option('wcpopup_chk_phone'),
+			'usermail'=>(int)get_option('wcpopup_chk_email'),
+		);
 	}
 	
 	public function createTemplateForm(){
@@ -83,17 +90,21 @@ class Wcpopup_Public {
 			  <form action="#" method="post" class="form-horizontal">
 			  
 			   <div class="mb-3">
-				[wcpoup-field type="select" label="Страна доставки:" country="UA;RU;KZ;"]
+				[wcpoup-field type="label" forname="country" label="Страна доставки:" ]
+				[wcpoup-field type="select" country="UA;RU;KZ;"]
 
 			  </div>			  
 			   <div class="mb-3">
-				[wcpoup-field name="username" type="input" label="Ваше имя" placeholder="Ваше имя"]
+				[wcpoup-field type="label" forname="username" label="Ваше имя"]
+				[wcpoup-field name="username" type="input" placeholder="Ваше имя"]
 			  </div>
 			   <div class="mb-3">
-				[wcpoup-field name="userphone" type="input" label="Номер телефона" placeholder="Номер телефона"]
+			    [wcpoup-field type="label" forname="userphone" label="Номер телефона" ]
+				[wcpoup-field name="userphone" type="input" placeholder="Номер телефона"]
 			  </div>
 			  <div class="mb-3">
-				[wcpoup-field name="usermail" type="input" label="Email" placeholder="Email"]
+			    [wcpoup-field type="label" forname="usermail" label="Email"]
+				[wcpoup-field name="usermail" type="input" placeholder="Email"]
 
 			  </div>
 			   <div class="mb-3">
@@ -183,6 +194,12 @@ class Wcpopup_Public {
 	 *
 	 * @since    1.0.0
 	 */
+	public function labelCreate( $atts ){
+		$name = sanitize_text_field($atts['forname']);
+		$requred = ($this->fieldName[$name] == 1) ? '<span class="form-label-requred">*</span>' : "";
+		$html = '<label for="'.$name.'" class="form-label">'.sanitize_text_field($atts['label']).$requred.'</label>';
+		return $html;
+	}
 	public function selectCountryFieldGen( $atts ){
 		global $woocommerce;
 		$UserCountry = $this->getUserCountry(); 		
@@ -200,7 +217,6 @@ class Wcpopup_Public {
 				$select .= "<option ".$selected." value='".$key."' >".$name." ".$_SESSION['SELCOUNRTY']."</option>";
 			}
 		}		
-		$html = '<label for="country" class="form-label">'.sanitize_text_field($atts['label']).'</label>';
 		$html .= '<div class="wcpopup-select-box" >
 				  <select id="country" name="country" required>
 					'.$select.'
@@ -211,8 +227,7 @@ class Wcpopup_Public {
 	
 	public function inputFieldGen($atts){
 		$name = sanitize_text_field($atts['name']);
-		$html = '<label for="'.$name.'" class="form-label">'.sanitize_text_field($atts['label']).'</label>
-				<div class="wcpopup-input-box">
+		$html = '<div class="wcpopup-input-box">
 				  <input type="text" class="form-control" name="'.$name.'" id="'.$name.'" placeholder="'.sanitize_text_field($atts['placeholder']).'" required>
 				</div>';
 		return $html;
@@ -226,23 +241,25 @@ class Wcpopup_Public {
 			case 'select': $html = $this->selectCountryFieldGen($atts); break;
 			case 'input': $html = $this->inputFieldGen($atts); break;
 			case 'button': $html = $this->buttonGen($atts); break;
+			case 'label': $html = $this->labelCreate($atts); break;
 		}
 		return $html;
 	}
 	public function popupCountryForm() {
 		global $woocommerce;
-		$this->ajaxVar();
-		//if (!isset($_SESSION['WCPOPUP'])  && get_option('wcpopup_popup_enable') ){ //WCPOPUP = false and wcpopup_popup_enable = true		
-		//}
-		$content_post = get_posts( array( 
-			'post_type' => 'wcpopup-form',
-			'name' => 'wcpopup-form-welcome',
-			'post_status' => 'publish',
-			'posts_per_page' => 1
-		));
-		$content_post = $content_post[0];
-		$content = $content_post->post_content;
-		echo do_shortcode($content);
+		$this->ajaxVar(); 
+		if ( get_option('wcpopup_popup_enable') ){ 
+			//WCPOPUP = false and wcpopup_popup_enable = true					
+			$content_post = get_posts( array( 
+				'post_type' => 'wcpopup-form',
+				'name' => 'wcpopup-form-welcome',
+				'post_status' => 'publish',
+				'posts_per_page' => 1
+			));
+			$content_post = $content_post[0];
+			$content = $content_post->post_content;
+			echo do_shortcode($content);
+		}
 	}
 	/**
 	 * Ajax function set country in session
@@ -251,7 +268,7 @@ class Wcpopup_Public {
 	 */	
 	public function sendDataAjax() {
 		global $wpdb;
-		$id = array();
+		$id = array();  
 			
 		$SelCountry = substr(sanitize_text_field($_POST['country']),0,2);
 		if (!empty($SelCountry) ){
@@ -321,7 +338,7 @@ class Wcpopup_Public {
 		global $wpdb;
 		$table_name = $wpdb->prefix . "wcpopup_clients";
 		$data = array( 
-			'uid' => md5(WC_Geolocation::get_ip_address().wc_get_user_agent()),
+			'uid' => md5(WC_Geolocation::get_ip_address().wc_get_user_agent().date('Y-m-d')),
 			'date' => current_time('mysql'), 
 			'name' => $array['USERNAME'],
 			'country_detect' => $this->getUserCountry(),
@@ -357,29 +374,14 @@ class Wcpopup_Public {
 		$this->ajaxreturn(1);
 	}
 	public function WcAddToCart (){
-		$_SESSION['WCPOPUP_COUNTER']++;
+		$_SESSION['WCPOPUP_COUNTER']++; //counter click
 		if ($_SESSION['WCPOPUP_COUNTER'] > get_option('wcpopup_popup_counter')){
 			$this->WcPopUpClose();
-		}else{
-			$this->WcPopUpOpen();
 		}
 		return true;
 	}
 	public function WcPopUpClose (){
 		$_SESSION['WCPOPUP_START']  = 1;
-		$_SESSION['WCPOPUP'] = 'close';
-		return true;
-	}
-	public function WcPopUpOpen (){
-		if (empty(WC()->session->get('USERNAME')) && get_option('wcpopup_chk_name') ){
-			unset($_SESSION['WCPOPUP']);
-		}
-		else if (empty(WC()->session->get('USERPHONE')) && get_option('wcpopup_chk_phone') ){
-			unset($_SESSION['WCPOPUP']);
-		}
-		else if (empty(WC()->session->get('USERMAIL')) && get_option('wcpopup_chk_email') ){
-			unset($_SESSION['WCPOPUP']);
-		}
 		return true;
 	}	
 	public function getCountryPoshlina($country){
@@ -485,14 +487,14 @@ class Wcpopup_Public {
 	}
 	
 	public function displayProgressBlockXoo(){
-		if (!get_option('wcpopup_progressbar_enable')) return true;
+		if (!get_option('wcpopup_progressbar_enable_xoo')) return true;
 		$this->cartData('wcpopup_progressbar_xoo');
 		$this->progressBarAjax('wcpopup_progressbar_xoo','wcpopup_progressbar_xoo_display');
 		$this->displayProgressBlock('wcpopup_progressbar_xoo_display');
 	}
 	
 	public function displayProgressBlockWC(){
-		if (!get_option('wcpopup_progressbar_enable')) return true;
+		if (!get_option('wcpopup_progressbar_enable_wc')) return true;
 		$this->cartData('wcpopup_progressbar_wc');
 		$this->progressBarAjax('wcpopup_progressbar_wc','wcpopup_progressbar_wc_display');
 		$this->displayProgressBlock('wcpopup_progressbar_wc_display');
