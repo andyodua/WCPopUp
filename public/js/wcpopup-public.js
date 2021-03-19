@@ -5,9 +5,15 @@ jQuery(document).ready(function() {
 	var countervalue = jQuery("#wcpopup_variable").data('counter');
 	var startvalue = jQuery("#wcpopup_variable").data('start');	
 	
+	var fancy = jQuery('#wcpopup_modal').fancybox({
+		beforeClose: function() {
+			jQuery.fn.wcpopupclose();
+		}
+	}); 	
+	
 	setTimeout(function(){
 		if (startvalue == 0){
-			jQuery('#wcpopup_modal').fancybox().trigger('click'); 
+			fancy.trigger('click');
 			startvalue = 1;
 		}
 	},timervalue) 
@@ -15,14 +21,14 @@ jQuery(document).ready(function() {
 	
 	jQuery('.single_add_to_cart_button').bind('click',function(){
 		if (countervalue < countvalue){
-			jQuery('#wcpopup_modal').fancybox().trigger('click'); 
+			fancy.trigger('click'); 
 			countervalue++;
 		}
 	}) 
 	
 	jQuery('.add_to_cart_button').bind('click',function(){
 		if (countervalue < countvalue){
-			jQuery('#wcpopup_modal').fancybox().trigger('click'); 
+			fancy.trigger('click'); 
 			countervalue++;
 		}
 	}) 	
@@ -70,28 +76,28 @@ jQuery(document).ready(function() {
 		return false;
 	})
 	jQuery('#wcpopup_modal  #later').bind('click',function(){
-		var data = {
-			'action': 'wcppopupclose',
-		};
-		var ajax_url = "/wp-admin/admin-ajax.php";		
-		
-		jQuery.ajax({
-			type        : "POST",
-			cache       : false,
-			url         : ajax_url,
-			data        : data,
-			dataType: 'json',
-			success: function(data) {
-				console.log(data);
-				if (data.status == 1){
-					 jQuery.fancybox.close();
-				}
-			}
-		});
-
+		jQuery.fancybox.close();
 		return false;
 	})	
 });
+jQuery.fn.wcpopupclose = function(){
+	var data = {
+		'action': 'wcppopupclose',
+	};
+	var ajax_url = "/wp-admin/admin-ajax.php";		
+	
+	jQuery.ajax({
+		type        : "POST",
+		cache       : false,
+		url         : ajax_url,
+		data        : data,
+		dataType: 'json',
+		success: function(data) {
+			console.log(data);
+		}
+	});
+}
+
 jQuery.fn.logic = function(){
 	var element = this;
 	var weight = 0;

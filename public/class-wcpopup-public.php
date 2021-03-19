@@ -62,11 +62,11 @@ class Wcpopup_Public {
 	public function forceSessionEnd(){
 		session_destroy ();
 	}
-	private $fieldName = array();
+	private $fieldNameRequred = array();
 	public function WcPopUpInit(){
 		$this->forceSession();
 		$this->createTemplateForm();
-		$this->fieldName = array(
+		$this->fieldNameRequred = array(
 			'country'=>(int)get_option('wcpopup_chk_country'),
 			'username'=>(int)get_option('wcpopup_chk_name'),
 			'userphone'=>(int)get_option('wcpopup_chk_phone'),
@@ -196,7 +196,7 @@ class Wcpopup_Public {
 	 */
 	public function labelCreate( $atts ){
 		$name = sanitize_text_field($atts['forname']);
-		$requred = ($this->fieldName[$name] == 1) ? '<span class="form-label-requred">*</span>' : "";
+		$requred = ($this->fieldNameRequred[$name] == 1) ? '<span class="form-label-requred">*</span>' : "";
 		$html = '<label for="'.$name.'" class="form-label">'.sanitize_text_field($atts['label']).$requred.'</label>';
 		return $html;
 	}
@@ -249,7 +249,7 @@ class Wcpopup_Public {
 		global $woocommerce;
 		$this->ajaxVar(); 
 		if ( get_option('wcpopup_popup_enable') ){ 
-			//WCPOPUP = false and wcpopup_popup_enable = true					
+			//WCPOPUP = false and wcpopup_popup_enable = true
 			$content_post = get_posts( array( 
 				'post_type' => 'wcpopup-form',
 				'name' => 'wcpopup-form-welcome',
@@ -428,14 +428,23 @@ class Wcpopup_Public {
 				<?php
 			}
 		}		
-	}		
+	}
+	public function getSelectUserCountry(){
+		$SelCountry = WC()->session->get('SELCOUNRTY');
+		if (empty($SelCountry)){
+			$UserCountry = $this->getUserCountry(); 
+			return $UserCountry;
+		}
+		return $SelCountry;
+		
+	}
 	public function progressBarAjax($idbar,$idisplay){
 		$cart = WC()->cart->get_cart();
 		if ( !empty( $cart ) ){
 			if (!empty(WC()->session->get('SELCOUNRTY'))){
 			?>
 			<!-- WCPopUp -->
-			<span id="selectedcountry" data-country="<?php echo  WC()->session->get('SELCOUNRTY'); ?>"></span>
+			<span id="selectedcountry" data-country="<?php echo  $this->getSelectUserCountry(); ?>"></span>
 			<?php
 			}
 			?>
@@ -464,8 +473,8 @@ class Wcpopup_Public {
 							shipname,
 							parseFloat(masiv_price[shipid]),
 							parseFloat(masiv_weight[shipid]),
-							'<?php echo $this->getCountryWeight(WC()->session->get('SELCOUNRTY')); ?>',
-							'<?php echo $this->getCountryPoshlina(WC()->session->get('SELCOUNRTY')); ?>',
+							'<?php echo $this->getCountryWeight($this->getSelectUserCountry()); ?>',
+							'<?php echo $this->getCountryPoshlina($this->getSelectUserCountry()); ?>',
 						);
 					}
 				});

@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: (this should be a list of wordpress.org userid's)
+Contributors: andy.od.ua
 Donate link: WCPopUp
 Tags: woocommerc, popup, progress bar
 Requires at least: 5.6.1
@@ -8,7 +8,7 @@ Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
+Adds popup welcome form and progress bar for duties and weight limits
 
 == Description ==
 
