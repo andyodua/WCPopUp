@@ -2,14 +2,14 @@
 
 /**
  * @link              WCPopUp
- * @since             2.0.9
+ * @since             2.0.15
  * @package           Wcpopup
  *
  * @wordpress-plugin
  * Plugin Name:       WCPopUp
  * Plugin URI:        https://andy.od.ua
  * Description:       Woocommerce popup country and progressbar .
- * Version:           2.0.9
+ * Version:           2.0.15
  * Author:            Andy.od.ua
  * Author URI:        https://andy.od.ua
  * License:           GPL-2.0+
@@ -31,7 +31,7 @@ if ( ! defined( 'WCPOPUP_PLUGIN_FILE' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'WCPOPUP_VERSION', '2.0.9' );
+define( 'WCPOPUP_VERSION', '2.0.15' );
 define( 'WCPOPUP_DB_VERSION', '1.1' );
 define( 'WCPOPUP_CHK_NAME', '1' );
 define( 'WCPOPUP_CHK_PHONE', '1' );
@@ -86,6 +86,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wcpopup.php';
  
 function run_wcpopup() {
 	if( !class_exists( 'woocommerce' ) ) return;
+	load_plugin_textdomain( 'wcpopup', false, dirname( plugin_basename(__FILE__) ) . '/languages' );
 	$plugin = new Wcpopup();
 	$plugin->run();
 }

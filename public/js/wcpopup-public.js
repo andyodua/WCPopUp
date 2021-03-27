@@ -128,11 +128,18 @@ jQuery.fn.progresbar = function(shipid,shipname,all_amount,all_weight,country_we
 	if (all_weight > country_weight){
 		bar_color = 'bg-danger';
 	}
-	var remain_weight = parseFloat(country_weight-all_weight).toFixed(3);
-	if (remain_weight<0){
-		remain_weight = "превышен лимит";
+	var remain_weight = jQuery.fn.language('weight_last')+' '+parseFloat(country_weight-all_weight).toFixed(3);
+	if (parseFloat(country_weight-all_weight).toFixed(3)<0){
+		remain_weight = jQuery.fn.language('limit_exceeded_weight');
 	}			
-	var progres_weight= 'Общий вес '+shipname+'<div class="container"><div class="row"><div class="col-9"><div class="progress"><div class="progress-bar '+bar_color+'" role="progressbar" style="width: '+proc_weight+'%" aria-valuenow="'+proc_weight+'" aria-valuemin="0" aria-valuemax="100"></div><span class="justify-content-center d-flex position-absolute w-100 bartext">осталось '+remain_weight+' kg</span></div></div><div class="col-3">max '+country_weight+' kg</div></div></div>';
+	var progres_weight= jQuery.fn.language('total_weight')+' '+shipname+'<div class="container">'+
+	'<div class="row"><div class="col-9">'+
+	'<div class="progress" title="'+jQuery.fn.language('hint_weight')+'">'+
+	'<div class="progress-bar '+bar_color+'" role="progressbar" style="width: '+proc_weight+'%" aria-valuenow="'+proc_weight+'" aria-valuemin="0" aria-valuemax="100"></div>'+
+	'<span class="justify-content-center d-flex position-absolute w-100 bartext">'+
+	''+remain_weight+' '+jQuery.fn.language('weight')+
+	'</span></div></div>'+
+	'<div class="col-3">'+jQuery.fn.language('weight_max')+' '+country_weight+' '+jQuery.fn.language('weight')+'</div></div></div>';
 	element.append(progres_weight);
 	
 	
@@ -141,10 +148,17 @@ jQuery.fn.progresbar = function(shipid,shipname,all_amount,all_weight,country_we
 	if (all_amount > country_poshlina){
 		bar_sum_color = 'bg-danger';
 	}	
-	var remain_poshlina = parseFloat(country_poshlina-all_amount).toFixed(2);
-	if (remain_poshlina<0){
-		remain_poshlina = "превышен лимит";
+	var remain_poshlina = jQuery.fn.language('duty_free_last')+' '+parseFloat(country_poshlina-all_amount).toFixed(2);
+	if (parseFloat(country_poshlina-all_amount).toFixed(2)<0){
+		remain_poshlina = jQuery.fn.language('limit_exceeded_duty_free');
 	}
-	var progres_poshlina = 'Беспошлинный лимит '+shipname+'<div class="container"><div class="row"><div class="col-9"><div class="progress"><div class="progress-bar '+bar_sum_color+'" role="progressbar" style="width: '+proc_sum+'%" aria-valuenow="'+proc_sum+'" aria-valuemin="0" aria-valuemax="100"></div><span class="justify-content-center d-flex position-absolute w-100 bartext">осталось '+remain_poshlina+' €</span></div></div><div class="col-3">max '+country_poshlina+' €</div></div></div>';		
+	var progres_poshlina = jQuery.fn.language('duty_free_limit')+' '+shipname+'<div class="container">'+
+	'<div class="row"><div class="col-9">'+
+	'<div class="progress" title="'+jQuery.fn.language('hint_duty_free')+'">'+
+	'<div class="progress-bar '+bar_sum_color+'" role="progressbar" style="width: '+proc_sum+'%" aria-valuenow="'+proc_sum+'" aria-valuemin="0" aria-valuemax="100"></div>'+
+	'<span class="justify-content-center d-flex position-absolute w-100 bartext">'+
+	''+remain_poshlina+' '+jQuery.fn.language('currency')+
+	'</span></div></div>'+
+	'<div class="col-3">'+jQuery.fn.language('duty_free_max')+' '+country_poshlina+' '+jQuery.fn.language('currency')+'</div></div></div>';		
 	element.append(progres_poshlina);
 }

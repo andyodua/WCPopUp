@@ -163,6 +163,8 @@ class Wcpopup {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		
+		$this->loader->add_action( 'wp_head', $plugin_public, 'ajaxLanguage' ); //popup form
+		
 		$this->loader->add_action( 'init', $plugin_public, 'WcPopUpInit'); //wc popup init
 		$this->loader->add_action( 'wp_logout', $plugin_public,'forceSessionEnd'); //clear session
 		$this->loader->add_action( 'wp_login', $plugin_public,'forceSessionEnd');	//clear session	

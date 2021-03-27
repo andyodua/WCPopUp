@@ -72,6 +72,10 @@ class Wcpopup_Public {
 			'userphone'=>(int)get_option('wcpopup_chk_phone'),
 			'usermail'=>(int)get_option('wcpopup_chk_email'),
 		);
+		if ( is_user_logged_in() ) {
+			$this->WcPopUpClose();
+			$_SESSION['WCPOPUP_COUNTER'] = get_option('wcpopup_popup_counter');
+		}
 	}
 	
 	public function createTemplateForm(){
@@ -188,6 +192,29 @@ class Wcpopup_Public {
 			>
 		</span>
 		<?php
+	}
+	public function ajaxLanguage(){
+		?>
+		<script> 
+		jQuery.fn.language = function(lng){
+			var language = {
+				'limit_exceeded_weight':'<?php _e( 'превышен лимит веса','wcpopup' ); ?>',
+				'limit_exceeded_duty_free':'<?php _e( 'превышен лимит пошлины','wcpopup' ); ?>',
+				'total_weight':'<?php _e( 'Общий вес','wcpopup' ); ?>',
+				'duty_free_limit':'<?php _e( 'Беспошлинный лимит','wcpopup' ); ?>',
+				'hint_weight':'<?php _e( 'Подсказка: Общий вес','wcpopup' ); ?>',
+				'hint_duty_free':'<?php _e( 'Подсказка: Беспошлинный лимит','wcpopup' ); ?>',
+				'currency':'<?php _e( '€','wcpopup' ); ?>',
+				'weight':'<?php _e( 'kg','wcpopup' ); ?>',
+				'weight_max':'<?php _e( 'макс. веса','wcpopup' ); ?>',
+				'duty_free_max':'<?php _e( 'макс. беспошлинный лимита','wcpopup' ); ?>',
+				'weight_last':'<?php _e( 'осталось свободного веса','wcpopup' ); ?>',
+				'duty_free_last':'<?php _e( 'осталось беспошлинного лимита','wcpopup' ); ?>'
+			}
+			return language[lng];
+		}
+		</script>
+		<?php		
 	}
 	/**
 	 * Popup form create
