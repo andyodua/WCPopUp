@@ -33,7 +33,7 @@ class Wcpopup_Activator {
 		self::db_install();
 		self::set_option();
 	}
-	public function set_option(){
+	public static function set_option(){
 		self::chk_option("wcpopup_db_version", WCPOPUP_DB_VERSION);
 		self::chk_option("wcpopup_chk_name", WCPOPUP_CHK_NAME);
 		self::chk_option("wcpopup_chk_phone", WCPOPUP_CHK_PHONE);
@@ -50,13 +50,13 @@ class Wcpopup_Activator {
 		self::chk_option("wcpopup_country_poshlina_default", WCPOPUP_COUNTRY_POSHLINA_DEFAULT);
 		self::chk_option("wcpopup_country_weight_default", WCPOPUP_COUNTRY_WEIGHT_DEFAULT);
 	}
-	public function chk_option($option,$value){
+	public static function chk_option($option,$value){
 		if (!get_option($option)){
 			add_option($option, $value);
 			return true;
 		}
 	}
-	public function db_install () {
+	public static function db_install () {
 		global $wpdb;
 		$table_name = $wpdb->prefix . "wcpopup_clients";
 		if($wpdb->get_var("show tables like '$table_name'") != $table_name) {
